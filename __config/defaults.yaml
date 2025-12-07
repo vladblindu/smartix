@@ -1,0 +1,9 @@
+{
+  "dirs": {
+    "resourceDirs": "__resources",
+    "dataDir": "__data",
+    "mediaDir": "__media",
+    "docsDir": "__docs",
+    "dockerDir": "__docker"
+  }
+}

@@ -1,0 +1,1 @@
+![logo-full150.png](__resources/images/logo-full150.png)

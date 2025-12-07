@@ -1,0 +1,13 @@
+dirs:
+  staticRoot: "static"
+  srcRoot: "src"
+  libRoot: "$srcRoot/lib"
+  assetsRoot: "$libRoot/assets"
+  configRoot: "$libRoot/config"
+  metaDir: "$configRoot/meta"
+  resourcesDir: "__resources"
+  imageResourcesDir: "$resourcesDir/images"
+  configResourcesDir: "$resourcesDir/config"
+  themeResourcesDir: "$resourcesDir/theme"
+  mediaDir: "__media"
+  mediaRoot: "$staticRoot/media"

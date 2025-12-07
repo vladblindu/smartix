@@ -1,0 +1,36 @@
+# VCS
+.git
+.gitignore
+
+# Node
+node_modules
+npm-debug.log
+
+# Dev tooling
+.idea
+*.swp
+*.log
+
+# Local env & secrets
+.env
+.env.*
+__data/cloudinary-media.json
+
+# Media & resources (not needed in runtime image)
+__media
+__resources
+__docs
+__data
+
+# Docker & scripts not needed at runtime
+__docker
+__bin
+
+# Build artifacts (we generate fresh inside Docker)
+build
+dist
+.svelte-kit
+
+# OS
+.DS_Store
+Thumbs.db
