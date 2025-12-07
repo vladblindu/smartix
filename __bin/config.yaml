@@ -1,0 +1,5 @@
+# __bin/config.yaml
+paths:
+  defaultConfig: "__config/default.yaml"
+  resourcesConfigDir: "__resources/config"
+  compiledConfig: "__bin/config.compiled.json"

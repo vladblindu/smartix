@@ -1,10 +1,8 @@
-// __bin/gen-conf/ConfigEmitter.ts
 import fs from 'fs';
-import path from 'path';
-import type { Paths } from './paths.class';
+import nodePath from 'path';
 
 export class ConfigEmitter {
-    constructor(private readonly paths: Paths) {}
+    constructor(private readonly projectRoot: string) {}
 
     private toIdentifier(key: string): string {
         const cleaned = key.replace(/[^a-zA-Z0-9_]/g, '_');
@@ -15,8 +13,10 @@ export class ConfigEmitter {
         return key.charAt(0).toUpperCase() + key.slice(1);
     }
 
-    emitAll(resolvedConfig: Record<string, any>) {
-        fs.mkdirSync(this.paths.outputDir, { recursive: true });
+    emitAll(resolvedConfig: Record<string, any>, configRootRelative: string) {
+        const outputDir = nodePath.resolve(this.projectRoot, configRootRelative);
+
+        fs.mkdirSync(outputDir, { recursive: true });
 
         const topLevelKeys = Object.keys(resolvedConfig);
         if (topLevelKeys.length === 0) {
@@ -28,7 +28,7 @@ export class ConfigEmitter {
             const value = resolvedConfig[key];
             const identifier = this.toIdentifier(key);
             const typeName = `${this.capitalize(identifier)}Config`;
-            const outputPath = path.join(this.paths.outputDir, `${key}.ts`);
+            const outputPath = nodePath.join(outputDir, `${key}.ts`);
 
             const fileContent = `/* AUTO-GENERATED FILE
  * DO NOT EDIT MANUALLY

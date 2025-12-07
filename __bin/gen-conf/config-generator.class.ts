@@ -1,5 +1,3 @@
-// __bin/gen-conf/config-generator.ts
-
 import type { Paths } from './paths.class';
 
 import { Yaml } from './yaml.class';
@@ -7,16 +5,19 @@ import { Merger } from './merger.class';
 import { VariableTable } from './variables-table.class';
 import { ConfigResolver } from './variable-solver.class';
 import { ConfigEmitter } from './config-emit.class';
+import { JsonWriter } from './json-writer';
 
 export class ConfigGenerator {
     private readonly loader: Yaml;
     private readonly merger: Merger;
     private readonly emitter: ConfigEmitter;
+    private readonly jsonWriter: JsonWriter;
 
     constructor(private readonly paths: Paths) {
         this.loader = new Yaml(paths);
         this.merger = new Merger();
-        this.emitter = new ConfigEmitter(paths);
+        this.emitter = new ConfigEmitter(paths.projectRoot);
+        this.jsonWriter = new JsonWriter(paths);
     }
 
     run() {
@@ -34,10 +35,24 @@ export class ConfigGenerator {
         const resolvedVars = varTable.resolveAll();
 
         console.log('🔄 Applying variables and stripping variable definitions...');
-        const resolver = new ConfigResolver(resolvedVars);
-        const finalConfig = resolver.resolveConfig(merged);
+        const finalConfig = new ConfigResolver(resolvedVars).resolveConfig(merged);
 
-        console.log('📝 Emitting TypeScript config files...');
-        this.emitter.emitAll(finalConfig);
+        console.log('💾 Writing compiled JSON config for __bin utilities...');
+        this.jsonWriter.write(finalConfig);
+
+        // 🔧 Determine TS output dir from processed app config
+        const dirs = finalConfig.dirs;
+        let configRootRel = 'src/lib/config'; // sensible fallback
+
+        if (dirs && typeof dirs.configRoot === 'string') {
+            configRootRel = dirs.configRoot;
+        } else {
+            console.warn(
+                '⚠️ No dirs.configRoot found in final config; using default "src/lib/config"'
+            );
+        }
+
+        console.log(`📝 Emitting TypeScript config files to ${configRootRel}...`);
+        this.emitter.emitAll(finalConfig, configRootRel);
     }
 }
